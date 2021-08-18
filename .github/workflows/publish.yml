@@ -1,0 +1,40 @@
+# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
+# For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
+
+name: Node.js Package
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  publish:
+    name: Publish for ${{ matrix.os }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact_name: app-linux
+            asset_name: index-linux-amd64
+          - os: windows-latest
+            artifact_name: app-windows.exe
+            asset_name: index-windows-amd64
+          - os: macos-latest
+            artifact_name: app-macos
+            asset_name: index-macos-amd64
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm ci
+        name: Install dependencies
+      - run: npm run pkg
+        name: Package
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist/${{ matrix.artifact_name }}
+          asset_name: ${{ matrix.asset_name }}
+          tag: ${{ github.ref }}
