@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "pkg": "pkg ."
+    "pkg:linux": "pkg . --targets node14-linux-x64 --output dist/discord-bot-linux",
+    "pkg:macos": "pkg . --targets node14-macos-x64 --output dist/discord-bot-macos",
+    "pkg:win": "pkg . --targets node14-win-x64 --output dist/discord-bot-win.exe"
   },
   "author": "",
   "license": "ISC",
@@ -23,13 +25,5 @@
   },
   "bin": {
     "bot": "./index.js"
-  },
-  "pkg": {
-    "targets": [
-      "node12-linux-x64",
-      "node12-macos-x64",
-      "node12-win-x64"
-    ],
-    "outputPath": "dist"
   }
 }
