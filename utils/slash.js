@@ -22,9 +22,9 @@ module.exports = {
       throw Error(error);
     }
   },
-  async globalCreate(data) {
+  async globalCreate(args) {
     try {
-      const { name, description, options } = data;
+      const { name, description, options } = args;
       const body = options
         ? {
             name,
@@ -52,9 +52,9 @@ module.exports = {
       throw Error(error);
     }
   },
-  async globalUpdate(commandID, data) {
+  async globalUpdate(commandID, args) {
     try {
-      const { name, description, options } = data;
+      const { name, description, options } = args;
       const body = options
         ? {
             name,
@@ -83,9 +83,9 @@ module.exports = {
       throw Error(error);
     }
   },
-  async guildCreate(guildID, data) {
+  async guildCreate(guildID, args) {
     try {
-      const { name, description, options } = data;
+      const { name, description, options } = args;
       const body = options
         ? {
             name,
@@ -132,6 +132,7 @@ module.exports = {
       );
       return data;
     } catch (error) {
+      console.log(error);
       throw Error(error);
     }
   },

@@ -1,8 +1,12 @@
-const { Client, Collection } = require("discord.js");
+const { Client } = require("discord.js");
 const dotenv = require("dotenv");
 const commands = require("./commands");
+const db = require("./utils/db");
 const logger = require("./utils/logger");
 const SlashCommand = require("./utils/slash");
+
+// Models
+require("./models/scholar");
 
 // Initiate from ENV
 dotenv.config();
@@ -15,6 +19,10 @@ bot.login(DISCORD_BOT_TOKEN);
 // Listen to when bot is ready
 bot.on("ready", async () => {
   try {
+    // Connect to DB
+    await db.sync({ force: true });
+    logger.success("Connect to DB");
+
     logger.success(`Log in as ${bot.user.tag}`);
 
     // Get all globals command
@@ -31,12 +39,12 @@ bot.on("ready", async () => {
       if (!foundCommand) {
         // New command
 
-        // Create command for global use
-        await SlashCommand.globalCreate({
-          name,
-          description,
-          options,
-        });
+        // // Create command for global use
+        // await SlashCommand.globalCreate({
+        //   name,
+        //   description,
+        //   options,
+        // });
 
         // Create command for guilds use
         const guildID = bot.guilds.cache.first().id;
@@ -78,13 +86,13 @@ bot.ws.on("INTERACTION_CREATE", async (interaction) => {
 
       // Execute the command
       // Return the result to channel
-      const result = execute();
+      const result = await execute(interaction, bot);
       logger.success(
-        `Command ${name} by ${username}#${discriminator} with ID ${id}`
+        `Command "${name}" by ${username}#${discriminator} with ID ${id}`
       );
       await SlashCommand.post(interaction.id, interaction.token, result);
     }
   } catch (error) {
-    logger.error(error);
+    await SlashCommand.post(interaction.id, interaction.token, error.message);
   }
 });

@@ -19,40 +19,27 @@ module.exports = {
     logger.info(`${msg} - SUCCESS`);
   },
   // 201
-  created(command, msg) {
-    logger.info(
-      `${command} - ${msg.author.id} - ${msg.author.username} - CREATED`
-    );
+  created(msg) {
+    logger.info(`${msg} - CREATED`);
   },
   // 202
-  updated(command, msg) {
-    logger.info(
-      `${command} - ${msg.author.id} - ${msg.author.username} - UPDATED`
-    );
+  updated(msg) {
+    logger.info(`${msg} - UPDATED`);
   },
   // 204
-  deleted(command, msg) {
-    logger.info(
-      `${command} - ${msg.author.id} - ${msg.author.username} - DELETED`
-    );
+  deleted(msg) {
+    logger.info(`${msg} - DELETED`);
   },
   // 400-403
-  unauthorized(command, msg) {
-    logger.warn(
-      `${command} - ${msg.author.id} - ${msg.author.username} - UNAUTHORIZED`
-    );
+  unauthorized(msg) {
+    logger.warn(`${msg} - UNAUTHORIZED`);
   },
   // 404
-  notFound(command, msg) {
-    logger.warn(
-      `${command} - ${msg.author.id} - ${msg.author.username} - NOT FOUND`
-    );
+  notFound(msg) {
+    logger.warn(`${msg} - NOT FOUND`);
   },
   // 500
-  error(command, msg, error) {
-    logger.warn(
-      `${command} - ${msg.author.id} - ${msg.author.username} - ERROR`
-    );
-    logger.debug(error);
+  error(msg, error) {
+    logger.error(`${msg} - ERROR`);
   },
 };

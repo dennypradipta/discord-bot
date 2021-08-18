@@ -1,7 +1,7 @@
 const health = require("../handlers/health");
-const nice = require("../handlers/nice");
+const add = require("../handlers/add");
 
 module.exports = {
   health,
-  nice,
+  add,
 };
