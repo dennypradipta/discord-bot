@@ -1,0 +1,37 @@
+# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
+# For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
+
+name: Node.js Package
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  publish:
+    name: Publish for Multi
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - artifact_name: discord-bot-linux
+            asset_name: discord-bot-linux
+          - artifact_name: discord-bot-win.exe
+            asset_name: discord-bot-win.exe
+          - artifact_name: discord-bot-macos
+            asset_name: discord-bot-macos
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm ci
+        name: Install dependencies
+      - run: npm run pkg
+        name: Package
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist/${{ matrix.artifact_name }}
+          asset_name: ${{ matrix.asset_name }}
+          tag: ${{ github.ref }}
