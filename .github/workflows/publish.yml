@@ -27,17 +27,14 @@ jobs:
       matrix:
         include:
           - os: Linux
-            platform: linux-x64
-            artifact_name: discord-bot-linux
-            asset_name: discord-bot-${{ steps.get_version.outputs.VERSION }}-linux-x64
+            artifact_name: discord-bot
+            file_suffix: linux-x64
           - os: Windows
-            platform: win-x64
-            artifact_name: discord-bot-win.exe
-            asset_name: discord-bot-${{ steps.get_version.outputs.VERSION }}-win-x64.exe
+            artifact_name: discord-bot.exe
+            file_suffix: win-x64.exe
           - os: MacOS
-            platform: macos-x64
-            artifact_name: discord-bot-macos
-            asset_name: discord-bot-${{ steps.get_version.outputs.VERSION }}-macos-x64
+            artifact_name: discord-bot
+            file_suffix: macos-x64
 
     steps:
       - uses: actions/checkout@v2
@@ -58,5 +55,5 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: dist/${{ matrix.artifact_name }}
-          asset_name: ${{ matrix.asset_name }}
+          asset_name: discord-bot-${{ steps.get_version.outputs.VERSION }}-${{ matrix.file_suffix }}
           tag: ${{ github.ref }}
