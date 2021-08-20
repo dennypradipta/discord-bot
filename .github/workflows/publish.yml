@@ -5,7 +5,7 @@ name: Upload Binary
 
 on:
   release:
-    types: [created] 
+    types: [published]
 
 jobs:
   sanity:
