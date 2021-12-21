@@ -1,0 +1,65 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+
+# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
+# For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
+
+jobs:
+  zip:
+    name: ZIP file for ${{ matrix.os }}
+    runs-on: ${{ matrix.runs_on }}
+    strategy:
+      matrix:
+        include:
+          - os: Linux
+            runs_on: ubuntu-latest
+            artifact_name: discord-bot
+            platform: linux-x64
+          - os: Windows
+            runs_on: windows-latest
+            artifact_name: discord-bot.exe
+            platform: win-x64
+          - os: MacOS
+            runs_on: macos-latest
+            artifact_name: discord-bot
+            platform: macos-x64
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - run: npm ci
+        name: Install dependencies
+      - run: npm run pkg -- -t node12-${{ matrix.platform }}
+        name: Pack the binary using vercel/pkg
+      - run: |
+          echo "::set-output name=NODE_SQLITE_PATH::$(find ./node_modules -name node_sqlite3.node)"
+        name: Find Node SQLite binary
+        id: find-node-sqlite
+        shell: bash
+      - run: echo ${{ steps.find-node-sqlite.outputs.NODE_SQLITE_PATH }}
+        name: Check if the Node SQLite binary is exists
+        shell: bash
+      - run: cp ${{ steps.find-node-sqlite.outputs.NODE_SQLITE_PATH }} ./dist
+        name: Copy the node sqlite binary
+        shell: bash
+      - run: file ./dist/*
+        name: List all the files to be compressed
+        shell: bash
+      - uses: papeloto/action-zip@v1
+        with:
+          files: ./dist/*
+          dest: discord-bot-${{ matrix.platform }}.zip
+        name: Zip the binary
+      - uses: actions/upload-artifact@v1
+        with:
+          name: discord-bot-${{ matrix.platform }}.zip
+          path: ${{ github.workspace }}/discord-bot-${{ matrix.platform }}.zip
+        name: Upload artifact
